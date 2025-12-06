@@ -56,6 +56,15 @@ async function run() {
       res.send(result);
     });
 
+    // query product
+    app.get("/category-filtered-product", async (req, res) => {
+      const { category: dd } = req.query;
+      const query = { category: dd };
+      console.log(query);
+      const result = await petssupplies.find(query).toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
