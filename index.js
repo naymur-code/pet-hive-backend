@@ -95,7 +95,7 @@ async function run() {
       const result = await petssupplies.updateOne(query, update);
       res.send(result);
     });
-    
+
     // orders================================================
     app.post("/orders", async (req, res) => {
       const data = req.body;
@@ -107,6 +107,11 @@ async function run() {
       const result = await orders.find().toArray();
       res.send(result);
     });
+
+
+
+    
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
