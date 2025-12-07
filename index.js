@@ -38,10 +38,12 @@ async function run() {
 
     const database = client.db("pethive");
     const petssupplies = database.collection("petssupplies");
+    const orders = database.collection("orders");
 
     app.post("/petssupplies", async (req, res) => {
       const data = req.body;
       const result = await petssupplies.insertOne(data);
+      res.send(result);
     });
 
     app.get("/petssupplies", async (req, res) => {
@@ -57,11 +59,52 @@ async function run() {
     });
 
     // query product
+    // http://localhost:3000/category-filtered-product?category=Food
     app.get("/category-filtered-product", async (req, res) => {
       const { category: dd } = req.query;
       const query = { category: dd };
-      console.log(query);
       const result = await petssupplies.find(query).toArray();
+      res.send(result);
+    });
+
+    // query for my listing email
+    // http://localhost:3000/my-listing?email=naymur.dev25@gmail.com
+    app.get("/my-listing", async (req, res) => {
+      const { email } = req.query;
+      const query = { email: email };
+      const result = await petssupplies.find(query).toArray();
+      res.send(result);
+    });
+
+    // remove for db
+    app.delete("/my-listing/:id", async (req, res) => {
+      const { id } = req.params;
+      const query = { _id: new ObjectId(id) };
+      const result = await petssupplies.deleteOne(query);
+      res.send(result);
+    });
+
+    // update for db
+    app.put("/petssupplies/:id", async (req, res) => {
+      const data = req.body;
+      const { id } = req.params;
+      const query = { _id: new ObjectId(id) };
+      const update = {
+        $set: data,
+      };
+      const result = await petssupplies.updateOne(query, update);
+      res.send(result);
+    });
+    
+    // orders================================================
+    app.post("/orders", async (req, res) => {
+      const data = req.body;
+      const result = await orders.insertOne(data);
+      res.send(result);
+    });
+
+    app.get("/orders", async (req, res) => {
+      const result = await orders.find().toArray();
       res.send(result);
     });
 
