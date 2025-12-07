@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const app = express();
 app.use(cors());
@@ -108,11 +108,6 @@ async function run() {
       const result = await orders.find().toArray();
       res.send(result);
     });
-
-
-
-    
-
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
