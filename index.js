@@ -1,6 +1,7 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const cors = require("cors");
+const serverless = require("serverless-http");
 require("dotenv").config();
 
 const port = process.env.PORT || 3000;
@@ -120,3 +121,4 @@ async function run() {
   }
 }
 run().catch(console.dir);
+module.exports = serverless(app);
