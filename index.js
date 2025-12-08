@@ -1,7 +1,6 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const cors = require("cors");
-const serverless = require("serverless-http");
 require("dotenv").config();
 
 const port = process.env.PORT || 3000;
@@ -10,19 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("hello world!!");
-});
-
-// app.listen(port, () => {
-//   console.log(`server is running ${port}`);
-// });
-
-// ypAAfeoUGrV27JkD
-// pet-hive
-
-const uri =
-  "mongodb+srv://pet-hive:ypAAfeoUGrV27JkD@cluster0.cyslekw.mongodb.net/?appName=Cluster0";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cyslekw.mongodb.net/?appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -36,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const database = client.db("pethive");
     const petssupplies = database.collection("petssupplies");
@@ -106,7 +93,13 @@ async function run() {
     });
 
     app.get("/orders", async (req, res) => {
-      const result = await orders.find().toArray();
+      const { email } = req.query;
+      const query = {};
+      if (email) {
+        query.buyerEmail = email;
+      }
+      console.log(query);
+      const result = await orders.find(query).toArray();
       res.send(result);
     });
 
@@ -121,4 +114,11 @@ async function run() {
   }
 }
 run().catch(console.dir);
-module.exports = serverless(app);
+
+app.get("/", (req, res) => {
+  res.send("hello world!!");
+});
+
+app.listen(port, () => {
+  console.log(`server is running ${port}`);
+});
